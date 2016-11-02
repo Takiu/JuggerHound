@@ -20,7 +20,7 @@ class MenuState extends FlxState
 	{
 		FlxG.camera.fade(FlxColor.BLACK, 1, true);
 		super.create();
-		NameTxt = new FlxText(20, 50, 0, "JugguerHound", 29);
+		NameTxt = new FlxText(20, 50, 0, "JuggerHound", 29);
 		NameTxt.alignment = CENTER;
 		NameTxt.screenCenter(X);
 		NameTxt.color = 0xFFc300ff;
