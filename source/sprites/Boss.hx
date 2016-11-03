@@ -17,7 +17,7 @@ class Boss extends Enemies
 	private var tipoA : Int;
 	private var r : FlxRandom;
 	private var lado : Bool = false;
-	private var cont : Int;
+	private var cont : Int=0;
 	private var timeAtt: Int = 0;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
@@ -26,14 +26,18 @@ class Boss extends Enemies
 		makeGraphic(32, 32, 0xFFFF00FF);
 		this.x = sbX;
 		this.y = sbY;
+		tierraE = new FlxTypedGroup<Disparo>();
 		r = new FlxRandom();
 		r.resetInitialSeed();
 		for (i in 0...16){
 			var disp = new Disparo(i * 16, this.y);
 			disp.kill;			
 			disp.loadGraphic(AssetPaths.Ata1__png, true, 16, 32);
-			disp.animation.add("Ata1Eleva", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 11], 25, false);			
+			disp.animation.add("Start", [11], 30, false);
+			disp.animation.add("Ata1Eleva", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 11], 25, false);
+			disp.animation.play("Start");
 			tierraE.add(disp);
+			FlxG.state.add(disp);
 		}
 	}
 	
@@ -47,7 +51,7 @@ class Boss extends Enemies
 			if(lado)
 				cont = Math.round((this.x + 16) / 16);			
 			else
-				cont = Math.round(this.x / 16);			
+				cont = Math.round(this.x / 16) ;			
 		}
 		switch(tipoA)
 		{
@@ -99,12 +103,14 @@ class Boss extends Enemies
 			if (!lado)
 				cont--;
 			else	
-				cont++;
-			//Hacer algo para invocar a cada miembro
-			FlxG.state.add();
-			if (cont == -1 || cont == 15)
+				cont++;			
+			if (cont <= -1 || cont >= 15)
 			{
-				atacando = false;
+				DestruirTierra();
+			}
+			else{
+				tierraE.members[cont].revive();
+				tierraE.members[cont].animation.play("Ata1Eleva");
 			}
 		}
 	}
@@ -124,5 +130,20 @@ class Boss extends Enemies
 		
 	}
 	
+	var timeTierra : Int = 0;
+	private function DestruirTierra()
+	{	
+		timeTierra++;
+		if (timeTierra == 6)
+		{
+			atacando = false;
+			tierraE.forEachAlive(function(obj : Disparo)
+			{
+				obj.kill();
+			});
+			timeTierra = 0;
+		}	
+		
+	}
 	
 }
