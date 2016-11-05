@@ -14,6 +14,7 @@ class Boss extends Enemies
 	private static inline var sbY: Int = 100;
 	private var atacando : Bool = false;
 	public var tierraE:FlxTypedGroup<Disparo>;
+	public var techoE:FlxTypedGroup<Disparo>;
 	private var tipoA : Int;
 	private var r : FlxRandom;
 	private var lado : Bool = false;
@@ -25,8 +26,9 @@ class Boss extends Enemies
 		super(X, Y, SimpleGraphic);
 		makeGraphic(32, 32, 0xFFFF00FF);
 		this.x = sbX;
-		this.y = sbY;
+		this.y = sbY;		
 		tierraE = new FlxTypedGroup<Disparo>();
+		techoE = new FlxTypedGroup<Disparo>();
 		r = new FlxRandom();
 		r.resetInitialSeed();
 		for (i in 0...16){
@@ -39,6 +41,16 @@ class Boss extends Enemies
 			tierraE.add(disp);
 			FlxG.state.add(disp);
 		}
+		for (i in 0...8){
+			var disp = new Disparo(i * 32, 0);
+			disp.loadGraphic(AssetPaths.Ata2__png, true, 32, 32);
+			disp.animation.add("Start", [2],30,false);
+			disp.animation.add("Terre", [1, 2, 3, 2], 30, true);
+			disp.animation.add("Nace", [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 2], 20, false);
+			disp.animation.play("Start");
+			techoE.add(disp);
+			FlxG.state.add(disp);
+		}		
 	}
 	
 	public function Atacar()
@@ -46,7 +58,7 @@ class Boss extends Enemies
 		if (!atacando)
 		{
 			atacando = true;
-			tipoA = 1;//r.int(1, 4);
+			tipoA = 2;//r.int(1, 2);
 			velocity.x = 0;			
 			if(lado)
 				cont = Math.round((this.x + 16) / 16);			
@@ -58,7 +70,7 @@ class Boss extends Enemies
 			case 1:
 				Ata1();
 			case 2:
-				Ata2();
+				Ata2();				
 			case 3:
 				Ata3();
 			case 4:
@@ -115,9 +127,47 @@ class Boss extends Enemies
 		}
 	}
 	
+	
+	static var timePico : Int = 0;	
+	
 	private function Ata2()
 	{
-		
+		var picAnt : Int = 0;
+		if (timePico == 0) {
+			var pr : Int = 0;
+			for (i in 0...3) {
+				pr = r.int(0, 7);
+				techoE.members[pr].activado = true;
+				techoE.members[pr].animation.play("Terre");
+			}
+			picAnt = 0;			
+		}
+		if (timePico == 9)
+		{	
+			techoE.forEach(function(obj : Disparo)
+			{
+				if (obj.activado)
+				{			
+					obj.animation.stop();
+					obj.velocity.y = 200; 
+				}
+			});
+		}				
+		timePico++;
+		if (timePico == 15) {
+			techoE.forEach(function(obj : Disparo)
+			{
+				if (obj.activado)
+				{			
+					obj.animation.play("Nace");
+					obj.activado = false;
+					obj.velocity.y = 0; 
+					obj.y = 0;
+				}
+			});
+			atacando = false;
+			timePico = 0;
+		}
 	}
 	
 	private function Ata3()
