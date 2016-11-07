@@ -6,20 +6,26 @@ import sprites.Disparo;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.math.FlxRandom;
+import flixel.tweens.FlxTween;
+import flixel.math.FlxPoint;
 
 class Boss extends Enemies 
 {
 
-	private static inline var sbX: Int = 230;
+	private static inline var sbX: Int = 0;
 	private static inline var sbY: Int = 100;
 	private var atacando : Bool = false;
-	public var tierraE:FlxTypedGroup<Disparo>;
-	public var techoE:FlxTypedGroup<Disparo>;
+	private var tierraE:FlxTypedGroup<Disparo>;
+	private var techoE:FlxTypedGroup<Disparo>;
+	private var piedra:FlxTypedGroup<Disparo>;
 	private var tipoA : Int;
 	private var r : FlxRandom;
 	private var lado : Bool = false;
 	private var cont : Int=0;
 	private var timeAtt: Int = 0;
+	private var _tween:FlxTween;
+	private var _min:FlxPoint;
+	private var _max:FlxPoint;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
@@ -29,6 +35,7 @@ class Boss extends Enemies
 		this.y = sbY;		
 		tierraE = new FlxTypedGroup<Disparo>();
 		techoE = new FlxTypedGroup<Disparo>();
+		piedra = new FlxTypedGroup<Disparo>();
 		r = new FlxRandom();
 		r.resetInitialSeed();
 		for (i in 0...16){
@@ -50,7 +57,13 @@ class Boss extends Enemies
 			disp.animation.play("Start");
 			techoE.add(disp);
 			FlxG.state.add(disp);
-		}		
+		}
+		var pied = new Disparo(0,0);
+		pied.makeGraphic(32, 32, 0xFFA4A4A4);
+		pied.kill();
+		piedra.add(pied);
+		FlxG.state.add(pied);
+		//FlxG.watch.add(Boss, "condi");
 	}
 	
 	public function Atacar()
@@ -58,7 +71,7 @@ class Boss extends Enemies
 		if (!atacando)
 		{
 			atacando = true;
-			tipoA = 2;//r.int(1, 2);
+			tipoA = r.int(1, 3);
 			velocity.x = 0;			
 			if(lado)
 				cont = Math.round((this.x + 16) / 16);			
@@ -128,19 +141,17 @@ class Boss extends Enemies
 	}
 	
 	
-	static var timePico : Int = 0;	
+	var timePico : Int = 0;	
 	
 	private function Ata2()
 	{
-		var picAnt : Int = 0;
 		if (timePico == 0) {
 			var pr : Int = 0;
 			for (i in 0...3) {
 				pr = r.int(0, 7);
 				techoE.members[pr].activado = true;
 				techoE.members[pr].animation.play("Terre");
-			}
-			picAnt = 0;			
+			}		
 		}
 		if (timePico == 9)
 		{	
@@ -170,8 +181,55 @@ class Boss extends Enemies
 		}
 	}
 	
+	var posPlayer : Float;
+	var xs : Array<Float>;
+	var ys : Array<Float>;
 	private function Ata3()
 	{
+		if (timePico == 0)		
+		{	
+			//posPlayer = Posicion del player;
+			piedra.members[0].revive();
+			if (lado)
+			{
+				posPlayer = 240;
+				xs = [this.x+16, this.x + (240 - this.x)/2, 240];
+				ys = [this.y+16, this.y - 96, 100];
+			}
+			else
+			{				
+				posPlayer = 0;
+				xs = [this.x-16, this.x/2, 0];
+				ys = [this.y+16, this.y - 96, 100];
+			}			
+			piedra.members[0].x = xs[0];
+			piedra.members[0].y = ys[0];
+		}
+		timePico++;
+		if (timePico == 10)
+		{
+			_tween = FlxTween.quadMotion(piedra.members[0],xs[0],ys[0],xs[1],ys[1],xs[2],ys[2],1,true);
+		}
+		if (timePico > 15)
+		{
+			if ((piedra.members[0].x >= posPlayer && !lado) || (piedra.members[0].x <= posPlayer && lado))
+			{			
+				if (lado)
+				{
+					piedra.members[0].x++;
+				}
+				else
+				{
+					piedra.members[0].x--;
+				}
+			}
+			else
+			{			
+				atacando = false;
+				timePico = 0;
+				piedra.members[0].kill();
+			}
+		}
 		
 	}
 	
@@ -180,18 +238,17 @@ class Boss extends Enemies
 		
 	}
 	
-	var timeTierra : Int = 0;
 	private function DestruirTierra()
 	{	
-		timeTierra++;
-		if (timeTierra == 6)
+		timePico++;
+		if (timePico == 6)
 		{
 			atacando = false;
 			tierraE.forEachAlive(function(obj : Disparo)
 			{
 				obj.kill();
 			});
-			timeTierra = 0;
+			timePico = 0;
 		}	
 		
 	}
