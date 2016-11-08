@@ -12,34 +12,35 @@ import flixel.math.FlxPoint;
 class Boss extends Enemies 
 {
 
-	private static inline var sbX: Int = 0;
-	private static inline var sbY: Int = 100;
+	private static inline var sbX: Int = 1950;
+	private static inline var sbY: Int = 784;
 	private var atacando : Bool = false;
-	private var tierraE:FlxTypedGroup<Disparo>;
-	private var techoE:FlxTypedGroup<Disparo>;
-	private var piedra:FlxTypedGroup<Disparo>;
+	public var tierraE:FlxTypedGroup<Disparo>;
+	public var techoE:FlxTypedGroup<Disparo>;
+	public var piedra:FlxTypedGroup<Disparo>;
 	private var tipoA : Int;
 	private var r : FlxRandom;
-	private var lado : Bool = false;
-	private var cont : Int=0;
+	private static var lado : Bool = false;
+	private static var cont : Int=0;
 	private var timeAtt: Int = 0;
 	private var _tween:FlxTween;
-	private var _min:FlxPoint;
-	private var _max:FlxPoint;
+	private var posPlayer : Float;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
 		makeGraphic(32, 32, 0xFFFF00FF);
 		this.x = sbX;
-		this.y = sbY;		
+		this.y = sbY;
+		this.acceleration.y = 700;
 		tierraE = new FlxTypedGroup<Disparo>();
 		techoE = new FlxTypedGroup<Disparo>();
 		piedra = new FlxTypedGroup<Disparo>();
+		
 		r = new FlxRandom();
 		r.resetInitialSeed();
-		for (i in 0...16){
-			var disp = new Disparo(i * 16, this.y);
+		for (i in 0...14){
+			var disp = new Disparo( 1752 + (i * 16), 784);
 			disp.kill;			
 			disp.loadGraphic(AssetPaths.Ata1__png, true, 16, 32);
 			disp.animation.add("Start", [11], 30, false);
@@ -48,8 +49,8 @@ class Boss extends Enemies
 			tierraE.add(disp);
 			FlxG.state.add(disp);
 		}
-		for (i in 0...8){
-			var disp = new Disparo(i * 32, 0);
+		for (i in 0...7){
+			var disp = new Disparo(1752 + (i * 32), 638);
 			disp.loadGraphic(AssetPaths.Ata2__png, true, 32, 32);
 			disp.animation.add("Start", [2],30,false);
 			disp.animation.add("Terre", [1, 2, 3, 2], 30, true);
@@ -63,7 +64,7 @@ class Boss extends Enemies
 		pied.kill();
 		piedra.add(pied);
 		FlxG.state.add(pied);
-		//FlxG.watch.add(Boss, "condi");
+		//FlxG.watch.add(Boss, "cont");
 	}
 	
 	public function Atacar()
@@ -73,10 +74,15 @@ class Boss extends Enemies
 			atacando = true;
 			tipoA = r.int(1, 3);
 			velocity.x = 0;			
-			if(lado)
-				cont = Math.round((this.x + 16) / 16);			
+			if (lado)
+			{
+				cont = Math.round((1950 - (this.x + 16)) / 16);
+				cont = 13 - cont;
+			}
 			else
-				cont = Math.round(this.x / 16) ;			
+			{
+				cont = Math.round((this.x - 1752) / 16) ;
+			}
 		}
 		switch(tipoA)
 		{
@@ -91,8 +97,9 @@ class Boss extends Enemies
 		}
 	}
 	
-	public function MovAttBoss()
+	public function MovAttBoss(playerX : Float)
 	{
+		posPlayer = playerX;
 		if (atacando)
 		{
 			if (timeAtt >= 10)
@@ -118,7 +125,7 @@ class Boss extends Enemies
 		{
 			velocity.x = -50;
 		}
-		lado = (this.x <= 0)?true:( this.x >= 224)?false:lado;
+		lado = (this.x <= posPlayer)?true:( this.x >= posPlayer)?false:lado;
 	}
 	
 	private function Ata1()
@@ -129,7 +136,7 @@ class Boss extends Enemies
 				cont--;
 			else	
 				cont++;			
-			if (cont <= -1 || cont >= 15)
+			if (cont <= -1 || cont >= 14)
 			{
 				DestruirTierra();
 			}
@@ -148,7 +155,7 @@ class Boss extends Enemies
 		if (timePico == 0) {
 			var pr : Int = 0;
 			for (i in 0...3) {
-				pr = r.int(0, 7);
+				pr = r.int(0, 6);
 				techoE.members[pr].activado = true;
 				techoE.members[pr].animation.play("Terre");
 			}		
@@ -165,7 +172,7 @@ class Boss extends Enemies
 			});
 		}				
 		timePico++;
-		if (timePico == 15) {
+		if (timePico == 17) {
 			techoE.forEach(function(obj : Disparo)
 			{
 				if (obj.activado)
@@ -173,7 +180,8 @@ class Boss extends Enemies
 					obj.animation.play("Nace");
 					obj.activado = false;
 					obj.velocity.y = 0; 
-					obj.y = 0;
+					obj.y = 638;
+					obj.colision = false;
 				}
 			});
 			atacando = false;
@@ -181,38 +189,36 @@ class Boss extends Enemies
 		}
 	}
 	
-	var posPlayer : Float;
+	var posPA : Float;
 	var xs : Array<Float>;
 	var ys : Array<Float>;
 	private function Ata3()
 	{
 		if (timePico == 0)		
 		{	
-			//posPlayer = Posicion del player;
+			posPA = posPlayer;
 			piedra.members[0].revive();
 			if (lado)
 			{
-				posPlayer = 240;
-				xs = [this.x+16, this.x + (240 - this.x)/2, 240];
-				ys = [this.y+16, this.y - 96, 100];
+				xs = [this.x+16, this.x + (posPA - this.x)/2, posPA];
+				ys = [this.y+16, this.y - 96, this.y];
 			}
 			else
 			{				
-				posPlayer = 0;
-				xs = [this.x-16, this.x/2, 0];
-				ys = [this.y+16, this.y - 96, 100];
+				xs = [this.x-16, this.x + (this.x - posPlayer )/2, posPA];
+				ys = [this.y+16, this.y - 96, this.y];
 			}			
 			piedra.members[0].x = xs[0];
 			piedra.members[0].y = ys[0];
 		}
 		timePico++;
-		if (timePico == 10)
+		if (timePico == 5)
 		{
 			_tween = FlxTween.quadMotion(piedra.members[0],xs[0],ys[0],xs[1],ys[1],xs[2],ys[2],1,true);
 		}
 		if (timePico > 15)
 		{
-			if ((piedra.members[0].x >= posPlayer && !lado) || (piedra.members[0].x <= posPlayer && lado))
+			if ((piedra.members[0].x >= posPA && !lado) || (piedra.members[0].x <= posPA && lado))
 			{			
 				if (lado)
 				{
@@ -229,8 +235,7 @@ class Boss extends Enemies
 				timePico = 0;
 				piedra.members[0].kill();
 			}
-		}
-		
+		}		
 	}
 	
 	private function Ata4()
@@ -247,10 +252,47 @@ class Boss extends Enemies
 			tierraE.forEachAlive(function(obj : Disparo)
 			{
 				obj.kill();
+				obj.colision = false;
 			});
 			timePico = 0;
 		}	
 		
+	}
+	
+	public function Colisiones(player : FlxSprite)
+	{
+		//Colision con la tierra
+		tierraE.forEach(function(obj : Disparo)
+		{			
+			if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
+			{
+				obj.colision = true;
+			}
+		});
+		
+		//Colision con los picos
+		techoE.forEach(function(obj : Disparo)
+		{
+			if (obj.activado)
+			{			
+				if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
+				{
+					obj.colision = true;
+				}
+			}
+		});
+		
+		//Colision con la piedra		
+		if (FlxG.pixelPerfectOverlap(player, piedra.members[0], null) && !piedra.members[0].colision)
+		{
+			piedra.members[0].colision = true;
+		}
+		
+		//Colision con el boss
+		if (FlxG.overlap(this, player))
+		{
+			
+		}
 	}
 	
 }

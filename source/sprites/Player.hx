@@ -4,6 +4,8 @@ import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import sprites.Disparo;
 
 /**
  * ...
@@ -15,12 +17,13 @@ class Player extends FlxSprite
 	public var stairsMove:Bool = false;
 	public var statusMovements:String = "jumpFall";
 	public var flipVar:Bool = false;
+	public var disparos:FlxTypedGroup<Disparo>;
+	private var lado:Bool = false;
 	
-	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+	public function new(?X:Float=0, ?Y:Float=0) 
 	{
-		super(X, Y, SimpleGraphic);
-		
-		loadGraphic(AssetPaths.titan__png, true, 34, 34);
+		super(X, Y);
+		loadGraphic(AssetPaths.Titan__png, true, 34, 34);
 		acceleration.y = 700;
 		animation.add("idle", [0,1], 2);
 		animation.add("idle_shoot", [6], 2);
@@ -35,6 +38,7 @@ class Player extends FlxSprite
 		//player.scale.set(2, 2);
 		setSize(25, 25);
 		centerOffsets();
+		
 	}
 	
 	public function playerMovement():Void
@@ -49,12 +53,12 @@ class Player extends FlxSprite
 				flipX = flipVar;
 				if (FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.LEFT) { statusMovements = "running"; }	
 				if (FlxG.keys.justPressed.X) { 
-					shooting = 50;	
+					shooting = 50;
 				}
 				if (shooting <= 0){
 					animation.play("idle");
 				} else {
-					animation.play("idle_shoot");
+					animation.play("idle_shoot");					
 				}
 				
 				
@@ -99,8 +103,8 @@ class Player extends FlxSprite
 			case "running":
 				if (velocity.y > 0 ){ statusMovements = "jumpFall"; }
 				
-				if (FlxG.keys.pressed.RIGHT) { velocity.x += Reg.hSpeed; flipVar = false; }					
-				if (FlxG.keys.pressed.LEFT) { velocity.x -= Reg.hSpeed; flipVar = true; }
+				if (FlxG.keys.pressed.RIGHT) { velocity.x += Reg.hSpeed; flipVar = false; lado = true; }					
+				if (FlxG.keys.pressed.LEFT) { velocity.x -= Reg.hSpeed; flipVar = true; lado = false; }
 				
 				if (FlxG.keys.justPressed.UP && isTouching(FlxObject.FLOOR)) {
 					Reg.jumping = 0;
@@ -133,8 +137,8 @@ class Player extends FlxSprite
 					}
 				}
 			case "jumpFall":
-				if (FlxG.keys.pressed.RIGHT) { velocity.x += Reg.hSpeed; flipVar = false;}					
-				if (FlxG.keys.pressed.LEFT) { velocity.x -= Reg.hSpeed; flipVar = true; }
+				if (FlxG.keys.pressed.RIGHT) { velocity.x += Reg.hSpeed; flipVar = false; lado = true; }					
+				if (FlxG.keys.pressed.LEFT) { velocity.x -= Reg.hSpeed; flipVar = true; lado = false; }
 				if (FlxG.keys.justPressed.X) { 
 					shooting = 50; 
 				}
@@ -167,8 +171,8 @@ class Player extends FlxSprite
 				if (isTouching(FlxObject.FLOOR)){
 					shooting = 0;
 					statusMovements = "idle";
-				}
-			
+				}		
 		}
 	}
+	
 }

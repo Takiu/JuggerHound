@@ -10,6 +10,8 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.tile.FlxTilemap;
 import flixel.FlxObject;
+import sprites.Boss;
+import sprites.Disparo;
 
 class PlayState extends FlxState
 {
@@ -19,6 +21,7 @@ class PlayState extends FlxState
 	public var otherTiles:FlxTilemap;
 	public var cameraGuide:FlxSprite;
 	public var stair:FlxSprite;
+	private var boss : Boss;	
 	
 	override public function create():Void
 	{
@@ -49,13 +52,25 @@ class PlayState extends FlxState
 		add(tiles);
 		add(otherTiles);
 		add(cameraGuide);
+		
+		//add Boss
+		boss = new Boss();
+		boss.kill();
+		add(boss);
+		FlxG.watch.add(player, "x");
+		//FlxG.watch.add(boss, "y");
+		
 	}
-
+	
+	var Bosstime : Int = 0;
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 		
 		FlxG.collide(tiles, player);
+		FlxG.collide(tiles, boss);
+		FlxG.collide(boss, player);
+		
 		if ((cameraGuide.x >= 1769 && cameraGuide.x <= 1864) && cameraGuide.y == 791){
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;
@@ -72,7 +87,22 @@ class PlayState extends FlxState
 				cameraGuide.x++;
 			} else {
 				Reg.bossFightBegins = false;
+				boss.revive();				
 			}
+		}
+		
+		if (boss.alive)
+		{
+			if (Bosstime >= 300)
+			{
+				boss.Atacar();
+				Bosstime = 0;
+			}
+			else{
+				boss.MovAttBoss(player.x);
+				boss.Colisiones(player);
+			}
+			Bosstime++;	
 		}
 		
 		Reg.jumping += elapsed;
@@ -85,8 +115,7 @@ class PlayState extends FlxState
 		{
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));
-			
-			
+				
 			stair = new FlxSprite(X, Y);
 			stair.loadGraphic(AssetPaths.escaleras__png, true, 16, 160);
 			Reg.stairs.add(stair);
@@ -103,12 +132,12 @@ class PlayState extends FlxState
 		if (entityName == "player"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));
-			player = new Player(X, Y);
-			
+			player = new Player(X, Y);			
 		}
-		
 		add(Reg.stairs);
 		add(player);
+		player.x = 1800;
 	}
+	
 }
 
