@@ -56,16 +56,26 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		
 		FlxG.collide(tiles, player);
+		if ((cameraGuide.x >= 1769 && cameraGuide.x <= 1864) && cameraGuide.y == 791){
+			Reg.bossFight = true;
+			Reg.bossFightBegins = true;
+		}
 		
-		player.playerMovement();
+		if (!Reg.bossFightBegins){
+			player.playerMovement();
+			if (!Reg.bossFight){
+				cameraGuide.x = player.x;
+				cameraGuide.y = player.y;
+			}
+		} else {
+			if (cameraGuide.x <= 1864){
+				cameraGuide.x++;
+			} else {
+				Reg.bossFightBegins = false;
+			}
+		}
+		
 		Reg.jumping += elapsed;
-		cameraGuide.x = player.x;
-		cameraGuide.y = player.y;
-		//X = 1769 , Y = 791 MOMENTO EN QUE EL PERSONAJE SE QUEDA QUIETO Y LA CAMARA SE MUEVE HASTA UN PUNTO
-		//X = 1864, Y = 791 POSICION DE LA CAMARA EN LA QUE SE TIENE QUE COLOCAR Y NO MOVER => BOSS FIGHT EMPIEZA
-		
-		if (FlxG.keys.justPressed.R)
-			FlxG.resetState();
 	}
 	
 	private function addEntities(entityName:String, entityData:Xml):Void
