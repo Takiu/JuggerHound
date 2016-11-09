@@ -126,6 +126,8 @@ class Boss extends Enemies
 			velocity.x = -50;
 		}
 		lado = (this.x <= posPlayer)?true:( this.x >= posPlayer)?false:lado;
+		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado))
+			velocity.x = 0;		
 	}
 	
 	private function Ata1()

@@ -21,7 +21,8 @@ class PlayState extends FlxState
 	public var otherTiles:FlxTilemap;
 	public var cameraGuide:FlxSprite;
 	public var stair:FlxSprite;
-	private var boss : Boss;	
+	private var boss : Boss;
+	public var playerDisparos:FlxTypedGroup<Disparo>;
 	
 	override public function create():Void
 	{
@@ -57,7 +58,7 @@ class PlayState extends FlxState
 		boss = new Boss();
 		boss.kill();
 		add(boss);
-		FlxG.watch.add(player, "x");
+		//FlxG.watch.add(player, "x");
 		//FlxG.watch.add(boss, "y");
 		
 	}
@@ -69,8 +70,8 @@ class PlayState extends FlxState
 		
 		FlxG.collide(tiles, player);
 		FlxG.collide(tiles, boss);
-		FlxG.collide(boss, player);
-		
+		FlxG.overlap(boss, player,null,Colisiones);
+		FlxG.overlap(boss, playerDisparos,null,Colisiones);
 		if ((cameraGuide.x >= 1769 && cameraGuide.x <= 1864) && cameraGuide.y == 791){
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;
@@ -85,6 +86,8 @@ class PlayState extends FlxState
 		} else {
 			if (cameraGuide.x <= 1864){
 				cameraGuide.x++;
+				player.velocity.x = 0;
+				player.velocity.y = 0;
 			} else {
 				Reg.bossFightBegins = false;
 				boss.revive();				
@@ -131,12 +134,39 @@ class PlayState extends FlxState
 		}
 		if (entityName == "player"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
-			var Y:Float = Std.parseFloat(entityData.get("y"));
-			player = new Player(X, Y);			
+			var Y:Float = Std.parseFloat(entityData.get("y"));					
+			playerDisparos = new FlxTypedGroup<Disparo>();		
+			add(playerDisparos);
+			player = new Player(X, Y, playerDisparos);
 		}
 		add(Reg.stairs);
 		add(player);
-		player.x = 1800;
+		//player.x = 1200;
+	}
+	
+	private function Colisiones(Sprite1:FlxObject, Sprite2:FlxObject): Bool{		
+		var sName1:String = Type.getClassName(Type.getClass(Sprite1));
+		var sName2:String = Type.getClassName(Type.getClass(Sprite2));
+		
+		if (sName1 == "sprites.Boss" && sName2 == "sprites.Player")
+		{
+			//Restar vida player
+			if (player.x >= boss.x)
+				player.x += 5;
+			if (player.x <= boss.x)
+				player.x -= 5;					
+			return true;
+		}
+		
+		if (sName1 == "sprites.Boss" && sName2 == "sprites.Disparo")
+		{
+			//Restar vida boss
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			return true;
+		}
+		return false;
 	}
 	
 }
