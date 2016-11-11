@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import sprites.Disparo;
+import flixel.ui.FlxBar;
 
 /**
  * ...
@@ -20,7 +21,7 @@ class Player extends FlxSprite
 	public var disparos:FlxTypedGroup<Disparo>;
 	private static var lado:Bool = true;
 	public var vida : Int = 10;
-	
+	public var hpBar:FlxBar;
 	public static var xs :Float = 0;
 	public static var ys :Float = 0;
 	
@@ -39,7 +40,8 @@ class Player extends FlxSprite
 		animation.add("jump_shoot", [12], 4);
 		animation.add("moving_shoot", [7, 8, 9, 10], 8);
 		animation.add("climb_stairs",[13,14],6);
-		animation.add("down_stairs",[13,14],6);
+		animation.add("down_stairs", [13, 14], 6);
+		animation.add("Danio", [0,15,0,15,0,15,0,15], 10);
 		//player.scale.set(2, 2);
 		setSize(25, 25);
 		centerOffsets();
@@ -50,12 +52,18 @@ class Player extends FlxSprite
 			disparos.add(newDisp);
 		}
 		
-		FlxG.watch.add(Player, "xs");
-		FlxG.watch.add(Player, "ys");
+		//FlxG.watch.add(Player, "xs");
+		//FlxG.watch.add(Player, "ys");
+		
+		hpBar = new FlxBar(this.x, this.y, LEFT_TO_RIGHT, 34, 4);
+		//hpBar = new FlxBar(this.x - 125, this.y - 128,BOTTOM_TO_TOP, 8, 100);
+		hpBar.createFilledBar(0xFF8e0000, 0xFF00FF00);
+		hpBar.setRange(0, vida);
+		hpBar.value = vida;		
 	}
 	
 	public function playerMovement():Void
-	{
+	{			
 		xs = this.x;
 		ys = this.y;
 		if (statusMovements != "ladder"){
@@ -64,6 +72,7 @@ class Player extends FlxSprite
 		}
 		
 		switch(statusMovements) {		
+			
 			case "idle":
 				flipX = flipVar;
 				if (FlxG.keys.pressed.RIGHT) { statusMovements = "running"; lado = true; }	

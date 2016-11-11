@@ -87,6 +87,9 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		
+		player.hpBar.x = player.x;
+		player.hpBar.y = player.y - 10;	
+		
 		FlxG.collide(tiles, player);
 		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
@@ -110,7 +113,7 @@ class PlayState extends FlxState
 			player.playerMovement();
 			if (!Reg.bossFight){
 				cameraGuide.x = player.x;
-				cameraGuide.y = player.y;
+				cameraGuide.y = player.y;				
 			}
 		} else {
 			if (cameraGuide.x <= 2072){
@@ -119,13 +122,13 @@ class PlayState extends FlxState
 				player.velocity.y = 0;
 			} else {
 				Reg.bossFightBegins = false;
-				boss.revive();				
+				boss.revive();
 			}
 		}
 		
 		if (boss.alive)
 		{
-			if (Bosstime >= 300)
+			if (Bosstime >= Reg.timeAttaqueBoss)
 			{
 				boss.Atacar();
 				Bosstime = 0;
@@ -179,7 +182,8 @@ class PlayState extends FlxState
 		add(boxes);
 		add(Reg.stairs);
 		add(player);
-		//player.x = 1200;
+		add(player.hpBar);
+		player.x = 1900;
 	}
 	
 	private function Colisiones(Sprite1:FlxObject, Sprite2:FlxObject): Bool{		
@@ -188,7 +192,7 @@ class PlayState extends FlxState
 		
 		if (sName1 == "sprites.Boss" && sName2 == "sprites.Player")
 		{
-			//Restar vida player
+			player.animation.play("Danio");
 			if (player.x >= boss.x)
 				player.x += 5;
 			if (player.x <= boss.x)
@@ -208,7 +212,6 @@ class PlayState extends FlxState
 		
 		if (sName1 == "sprites.Boss" && sName2 == "sprites.Disparo")
 		{
-			//Restar vida boss
 			boss.Danio();
 			var disp: Dynamic = cast(Sprite2, Disparo);
 			disp.kill();

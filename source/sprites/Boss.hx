@@ -29,6 +29,7 @@ class Boss extends Enemies
 	private var posPlayer : Float;
 	public var vida : Int = 20000;
 	public var hpBar:FlxBar;
+	private var ata4 : Bool = false;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
@@ -43,10 +44,11 @@ class Boss extends Enemies
 		techoE = new FlxTypedGroup<Disparo>();
 		piedra = new FlxTypedGroup<Disparo>();
 		
-		hpBar = new FlxBar(1985, 650,BOTTOM_TO_TOP, 8, 100);
+		hpBar = new FlxBar(2095, 965,RIGHT_TO_LEFT, 100, 8);
 		hpBar.createFilledBar(0xFF8e0000, 0xFFFF0000);
 		hpBar.setRange(0, vida);
 		hpBar.value = vida;
+		FlxG.state.add(hpBar);
 		
 		r = new FlxRandom();
 		r.resetInitialSeed();
@@ -84,7 +86,7 @@ class Boss extends Enemies
 		{
 			animation.play("idle");
 			atacando = true;
-			tipoA = 1;//r.int(1, 3);
+			tipoA = r.int(1, 3);
 			velocity.x = 0;			
 			if (lado)
 			{
@@ -104,8 +106,6 @@ class Boss extends Enemies
 				Ata2();				
 			case 3:
 				Ata3();
-			case 4:
-				Ata4();
 		}
 	}
 	
@@ -259,9 +259,15 @@ class Boss extends Enemies
 		}		
 	}
 	
-	private function Ata4()
+	public function Ata4()
 	{
-		
+		vida = 7000;
+		//Cambio de sprite
+		ata4 = true;
+		Reg.timeAttaqueBoss = 100;
+		loadGraphic(AssetPaths.LarsEnojado__png, true, 38, 38);
+		animation.add("idle", [0,1], 2);
+		animation.add("walk", [2, 3,4,5], 6);
 	}
 	
 	private function DestruirTierra()
@@ -280,7 +286,7 @@ class Boss extends Enemies
 		
 	}
 	
-	public function Colisiones(player : FlxSprite)
+	public function Colisiones(player : Player)
 	{
 		//Colision con la tierra
 		tierraE.forEach(function(obj : Disparo)
@@ -288,6 +294,8 @@ class Boss extends Enemies
 			if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
 			{
 				obj.colision = true;
+				player.vida--;
+				player.animation.play("Danio");
 			}
 		});
 		
@@ -299,6 +307,8 @@ class Boss extends Enemies
 				if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
 				{
 					obj.colision = true;
+					player.vida--;
+					player.animation.play("Danio");
 				}
 			}
 		});
@@ -307,6 +317,8 @@ class Boss extends Enemies
 		if (FlxG.pixelPerfectOverlap(player, piedra.members[0], null) && !piedra.members[0].colision)
 		{
 			piedra.members[0].colision = true;
+			player.vida--;
+			player.animation.play("Danio");
 		}
 		
 		//Colision con el boss
@@ -314,13 +326,20 @@ class Boss extends Enemies
 		{
 			
 		}
+		player.hpBar.value = player.vida;
+		if (player.vida <= 0){
+			//Murio el player
+		}
 	}
 	
 	public function Danio()
 	{
 		vida -= 200;
 		hpBar.value = vida;
-		if (vida <= 3000)
+		if (vida <= 1000 && !ata4)
+		{
+			Ata4();
+		}
 		if (vida <= 0)
 		{
 			//Perdio

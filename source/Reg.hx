@@ -16,6 +16,6 @@ class Reg
 	static public var bossFight:Bool = false;
 	static public var bossFightBegins:Bool = false;
 	static public var playerXPosition:Float;
-	
+	static public var timeAttaqueBoss : Int = 300;	
 	
 }
