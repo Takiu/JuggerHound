@@ -19,6 +19,7 @@ class Player extends FlxSprite
 	public var flipVar:Bool = false;
 	public var disparos:FlxTypedGroup<Disparo>;
 	private static var lado:Bool = true;
+	public var vida : Int = 10;
 	
 	public function new(?X:Float=0, ?Y:Float=0,playerDisp:FlxTypedGroup<Disparo>) 
 	{
