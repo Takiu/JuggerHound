@@ -12,6 +12,7 @@ import flixel.tile.FlxTilemap;
 import flixel.FlxObject;
 import sprites.Boss;
 import sprites.Disparo;
+import sprites.Dog;
 
 class PlayState extends FlxState
 {
@@ -23,6 +24,7 @@ class PlayState extends FlxState
 	public var stair:FlxSprite;
 	private var boss : Boss;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
+	public var dog:Dog;
 	
 	override public function create():Void
 	{
@@ -54,6 +56,9 @@ class PlayState extends FlxState
 		add(otherTiles);
 		add(cameraGuide);
 		
+		dog = new Dog(player.x + 300,player.y - 150);
+		add(dog);
+		
 		//add Boss
 		boss = new Boss();
 		boss.kill();
@@ -69,9 +74,14 @@ class PlayState extends FlxState
 		super.update(elapsed);
 		
 		FlxG.collide(tiles, player);
+		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
 		FlxG.overlap(boss, player,null,Colisiones);
-		FlxG.overlap(boss, playerDisparos,null,Colisiones);
+		FlxG.overlap(boss, playerDisparos, null, Colisiones);
+		FlxG.overlap(dog, playerDisparos, null, Colisiones);
+		if (Reg.bossFight){
+			FlxG.collide(player, otherTiles);
+		}
 		if ((cameraGuide.x >= 1769 && cameraGuide.x <= 1864) && cameraGuide.y == 791){
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;
@@ -108,6 +118,7 @@ class PlayState extends FlxState
 			Bosstime++;	
 		}
 		
+		Reg.playerXPosition = player.x;
 		Reg.jumping += elapsed;
 	}
 	
@@ -137,7 +148,8 @@ class PlayState extends FlxState
 			var Y:Float = Std.parseFloat(entityData.get("y"));					
 			playerDisparos = new FlxTypedGroup<Disparo>();		
 			add(playerDisparos);
-			player = new Player(X, Y, playerDisparos);
+			//player = new Player(X, Y, playerDisparos);
+			player = new Player(1200,700, playerDisparos);
 		}
 		add(Reg.stairs);
 		add(player);
@@ -164,6 +176,16 @@ class PlayState extends FlxState
 			var disp: Dynamic = cast(Sprite2, Disparo);
 			disp.kill();
 			disp.activado = false;
+			return true;
+		}
+		
+		if (sName1 == "sprites.Dog" && sName2 == "sprites.Disparo"){
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			
+			var _dog: Dynamic = cast(Sprite1, Dog);
+			_dog.kill();
 			return true;
 		}
 		return false;

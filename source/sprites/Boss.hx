@@ -29,10 +29,15 @@ class Boss extends Enemies
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
-		makeGraphic(32, 32, 0xFFFF00FF);
+		//makeGraphic(32, 32, 0xFFFF00FF);
+		loadGraphic(AssetPaths.Lars2__png, true, 38, 38);
+		animation.add("idle", [0,1], 2);
+		animation.add("walk", [2, 3,4,5], 6);
 		this.x = sbX;
 		this.y = sbY;
 		this.acceleration.y = 700;
+		setSize(36, 36);
+		centerOffsets();
 		tierraE = new FlxTypedGroup<Disparo>();
 		techoE = new FlxTypedGroup<Disparo>();
 		piedra = new FlxTypedGroup<Disparo>();
@@ -73,6 +78,7 @@ class Boss extends Enemies
 		{
 			atacando = true;
 			tipoA = r.int(1, 3);
+			animation.play("idle");
 			velocity.x = 0;			
 			if (lado)
 			{
@@ -81,7 +87,7 @@ class Boss extends Enemies
 			}
 			else
 			{
-				cont = Math.round((this.x - 1752) / 16) ;
+				cont = Math.round((this.x - 1752) / 16);
 			}
 		}
 		switch(tipoA)
@@ -119,15 +125,21 @@ class Boss extends Enemies
 	{
 		if (lado)
 		{
+			animation.play("walk");
+			flipX = false;
 			velocity.x = 50;
 		}
 		else
 		{
+			animation.play("walk");
+			flipX = true;
 			velocity.x = -50;
 		}
 		lado = (this.x <= posPlayer)?true:( this.x >= posPlayer)?false:lado;
-		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado))
-			velocity.x = 0;		
+		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado)){
+			animation.play("idle");
+			velocity.x = 0;
+		}
 	}
 	
 	private function Ata1()
