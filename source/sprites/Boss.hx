@@ -8,39 +8,44 @@ import flixel.FlxG;
 import flixel.math.FlxRandom;
 import flixel.tweens.FlxTween;
 import flixel.math.FlxPoint;
+import flixel.ui.FlxBar;
 
 class Boss extends Enemies 
 {
 
 	private static inline var sbX: Int = 1950;
-	private static inline var sbY: Int = 784;
+	private static inline var sbY: Int = 780;
 	private var atacando : Bool = false;
 	public var tierraE:FlxTypedGroup<Disparo>;
 	public var techoE:FlxTypedGroup<Disparo>;
 	public var piedra:FlxTypedGroup<Disparo>;
 	private var tipoA : Int;
 	private var r : FlxRandom;
-	private static var lado : Bool = false;
-	private static var cont : Int=0;
+	private var lado : Bool = false;
+	private var cont : Int=0;
 	private var timeAtt: Int = 0;
 	private var _tween:FlxTween;
 	private var posPlayer : Float;
+	public var vida : Int = 10000;
+	public var hpBar:FlxBar;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
-		//makeGraphic(32, 32, 0xFFFF00FF);
 		loadGraphic(AssetPaths.Lars2__png, true, 38, 38);
 		animation.add("idle", [0,1], 2);
 		animation.add("walk", [2, 3,4,5], 6);
 		this.x = sbX;
 		this.y = sbY;
 		this.acceleration.y = 700;
-		setSize(36, 36);
-		centerOffsets();
 		tierraE = new FlxTypedGroup<Disparo>();
 		techoE = new FlxTypedGroup<Disparo>();
 		piedra = new FlxTypedGroup<Disparo>();
+		
+		hpBar = new FlxBar(X - 50, Y - 175, null, 100, 10);
+		hpBar.createFilledBar(0xFF8e0000, 0xFFFF0000);
+		hpBar.setRange(0, vida);
+		hpBar.value = vida;
 		
 		r = new FlxRandom();
 		r.resetInitialSeed();
@@ -69,16 +74,16 @@ class Boss extends Enemies
 		pied.kill();
 		piedra.add(pied);
 		FlxG.state.add(pied);
-		//FlxG.watch.add(Boss, "cont");
+		FlxG.watch.add(Boss, "vida");
 	}
 	
 	public function Atacar()
 	{		
 		if (!atacando)
 		{
+			animation.play("idle");
 			atacando = true;
 			tipoA = r.int(1, 3);
-			animation.play("idle");
 			velocity.x = 0;			
 			if (lado)
 			{
@@ -87,7 +92,7 @@ class Boss extends Enemies
 			}
 			else
 			{
-				cont = Math.round((this.x - 1752) / 16);
+				cont = Math.round((this.x - 1752) / 16) ;
 			}
 		}
 		switch(tipoA)
@@ -125,20 +130,21 @@ class Boss extends Enemies
 	{
 		if (lado)
 		{
-			animation.play("walk");
-			flipX = false;
 			velocity.x = 50;
+			flipX = false;
+			animation.play("walk");
 		}
 		else
 		{
-			animation.play("walk");
-			flipX = true;
 			velocity.x = -50;
+			flipX = true;
+			animation.play("walk");
 		}
 		lado = (this.x <= posPlayer)?true:( this.x >= posPlayer)?false:lado;
-		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado)){
+		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado))
+		{
 			animation.play("idle");
-			velocity.x = 0;
+			velocity.x = 0;		
 		}
 	}
 	
@@ -307,6 +313,19 @@ class Boss extends Enemies
 		{
 			
 		}
+	}
+	
+	public function Danio()
+	{
+		vida -= 200;
+		hpBar.value = vida;
+		if (vida <= 3000)
+		if (vida <= 0)
+		{
+			//Perdio
+			destroy();
+		}
+		
 	}
 	
 }

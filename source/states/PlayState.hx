@@ -173,6 +173,7 @@ class PlayState extends FlxState
 		if (sName1 == "sprites.Boss" && sName2 == "sprites.Disparo")
 		{
 			//Restar vida boss
+			boss.Danio();
 			var disp: Dynamic = cast(Sprite2, Disparo);
 			disp.kill();
 			disp.activado = false;
