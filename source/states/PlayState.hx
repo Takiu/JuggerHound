@@ -13,6 +13,7 @@ import flixel.FlxObject;
 import sprites.Boss;
 import sprites.Disparo;
 import sprites.Dog;
+import flixel.system.FlxSound;
 
 class PlayState extends FlxState
 {
@@ -26,8 +27,11 @@ class PlayState extends FlxState
 	public var stair:FlxSprite;
 	public var box:FlxSprite;
 	private var boss : Boss;
+	public var boxes:FlxTypedGroup<FlxSprite>;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
+	
+	private var music:FlxSound;
 	
 	override public function create():Void
 	{
@@ -42,7 +46,6 @@ class PlayState extends FlxState
 		otherTiles2 = loader.loadTilemap(AssetPaths.TemplateB__png, 16, 16, "Capa2");
 		otherTiles3 = loader.loadTilemap(AssetPaths.TemplateA__png, 16, 16, "Capa1");
 		Reg.stairs = new FlxTypedGroup<FlxSprite>();
-		loader.loadEntities(addEntities, "entities");
 		
 		//SETEAR LAS PROPIEDADES DE LAS COLISIONES
 		tiles.setTileProperties(0, FlxObject.NONE);
@@ -59,9 +62,15 @@ class PlayState extends FlxState
 		
 		//add(background);
 		
+		boxes = new FlxTypedGroup<FlxSprite>();
+		
 		add(cameraGuide);
+		loader.loadEntities(addEntities, "entities");
 		dog = new Dog(player.x + 300,player.y - 150);
 		//add(dog);
+		
+		music = FlxG.sound.load(AssetPaths.Level__wav, 0.5, true);
+		music.play();		
 		
 		//add Boss
 		boss = new Boss();
@@ -80,14 +89,18 @@ class PlayState extends FlxState
 		FlxG.collide(tiles, player);
 		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
+		FlxG.collide(player,boxes);
 		FlxG.overlap(boss, player,null,Colisiones);
 		FlxG.overlap(boss, playerDisparos, null, Colisiones);
+		FlxG.overlap(boxes, playerDisparos, null, Colisiones);
 		FlxG.overlap(dog, playerDisparos, null, Colisiones);
-		trace(player.x + "----" + player.y);
 		if (Reg.bossFight){
 			FlxG.collide(player, otherTiles);
 		}
 		if ((cameraGuide.x >= 1989 && cameraGuide.x <= 2072) && cameraGuide.y == 935){
+			music.stop();
+			music = FlxG.sound.load(AssetPaths.bossLevel__wav, 0.9, true);
+			music.play();
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;
 		}
@@ -140,30 +153,31 @@ class PlayState extends FlxState
 			Reg.stairs.add(stair);
 		
 		}
-		/*if (entityName == "box"){
+		if (entityName == "box"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));
 			
 			box = new FlxSprite(X, Y);
+			box.immovable = true;
 			box.loadGraphic(AssetPaths.caja__png, true, 16, 16);
-			Reg.boxes.add(box);
-		}*/
+			boxes.add(box);
+		}
 		if (entityName == "player"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));	
 			
 			playerDisparos = new FlxTypedGroup<Disparo>();		
 			add(playerDisparos);
-			//player = new Player(X, Y, playerDisparos);
-			player = new Player(1400,900, playerDisparos);
+			player = new Player(X, Y, playerDisparos);
+			//player = new Player(1400,900, playerDisparos);
 		}
 		add(tiles);
 		add(otherTiles);
 		add(otherTiles3);
 		add(otherTiles2);
+		add(boxes);
 		add(Reg.stairs);
 		add(player);
-		//add(Reg.boxes);
 		//player.x = 1200;
 	}
 	
@@ -178,6 +192,16 @@ class PlayState extends FlxState
 				player.x += 5;
 			if (player.x <= boss.x)
 				player.x -= 5;					
+			return true;
+		}
+		
+		if (sName1 == "flixel.FlxSprite" && sName2 == "sprites.Disparo"){
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			
+			var _box: Dynamic = cast(Sprite1, FlxSprite);
+			_box.kill();
 			return true;
 		}
 		
