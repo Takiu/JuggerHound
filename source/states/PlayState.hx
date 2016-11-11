@@ -14,6 +14,7 @@ import sprites.Boss;
 import sprites.Disparo;
 import sprites.Dog;
 import flixel.system.FlxSound;
+import sprites.EneSaltin;
 
 class PlayState extends FlxState
 {
@@ -30,7 +31,7 @@ class PlayState extends FlxState
 	public var boxes:FlxTypedGroup<FlxSprite>;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
-	
+	public var salti : EneSaltin;
 	private var music:FlxSound;
 	
 	override public function create():Void
@@ -76,8 +77,11 @@ class PlayState extends FlxState
 		boss = new Boss();
 		boss.kill();
 		add(boss);
-		//FlxG.watch.add(player, "x");
+		//FlxG.watch.add(player, "y");
 		//FlxG.watch.add(boss, "y");
+		
+		salti = new EneSaltin(60,900);		
+		add(salti);
 		
 	}
 	
@@ -90,7 +94,7 @@ class PlayState extends FlxState
 		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
 		FlxG.collide(player,boxes);
-		FlxG.overlap(boss, player,null,Colisiones);
+		FlxG.overlap(boss, player, null, Colisiones);
 		FlxG.overlap(boss, playerDisparos, null, Colisiones);
 		FlxG.overlap(boxes, playerDisparos, null, Colisiones);
 		FlxG.overlap(dog, playerDisparos, null, Colisiones);
