@@ -73,7 +73,7 @@ class Boss extends Enemies
 			FlxG.state.add(disp);
 		}
 		var pied = new Disparo(0,0);
-		pied.makeGraphic(32, 32, 0xFFA4A4A4);
+		pied.loadGraphic(AssetPaths.Piedra__png,false,36,36);
 		pied.kill();
 		piedra.add(pied);
 		FlxG.state.add(pied);
@@ -222,12 +222,12 @@ class Boss extends Enemies
 			if (lado)
 			{
 				xs = [this.x+19, this.x + (posPA - this.x)/2, posPA];
-				ys = [this.y+19, this.y - 96, this.y + 6];
+				ys = [this.y+19, this.y - 96, this.y + 4];
 			}
 			else
 			{				
 				xs = [this.x-19, this.x + (this.x - posPlayer )/2, posPA];
-				ys = [this.y+19, this.y - 96, this.y + 6];
+				ys = [this.y+19, this.y - 96, this.y + 4];
 			}			
 			piedra.members[0].x = xs[0];
 			piedra.members[0].y = ys[0];
@@ -313,7 +313,7 @@ class Boss extends Enemies
 			}
 		});
 		
-		//Colision con la piedra		
+		//Colision con la piedra				
 		if (FlxG.pixelPerfectOverlap(player, piedra.members[0], null) && !piedra.members[0].colision)
 		{
 			piedra.members[0].colision = true;
@@ -343,7 +343,8 @@ class Boss extends Enemies
 		if (vida <= 0)
 		{
 			//Perdio
-			destroy();
+			this.kill();
+			hpBar.kill();
 			FlxG.switchState(new MenuState());
 		}
 		

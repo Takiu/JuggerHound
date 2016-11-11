@@ -47,7 +47,6 @@ class Player extends FlxSprite
 		centerOffsets();
 		for (i in 0...3){
 			var newDisp = new Disparo();
-			newDisp.makeGraphic(5, 5, 0xFF12FF52, false);
 			newDisp.kill();
 			disparos.add(newDisp);
 		}

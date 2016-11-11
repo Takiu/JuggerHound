@@ -17,9 +17,9 @@ class EnePlanta extends Enemies
 	public var disparos:FlxTypedGroup<Disparo>;
 	private static var xs : Float = 0;
 	private static var ys : Float=0;
-	public function new(?X:Float=0, ?Y:Float=0) 
+	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
-		super(X, Y);
+		super(X, Y, SimpleGraphic);
 		loadGraphic(AssetPaths.eggv1__png, true, 30, 30);
 		animation.add("Abrir", [0, 1, 2, 3], 2, false);
 		animation.add("Quieto", [2, 3], 10, true);
@@ -28,12 +28,12 @@ class EnePlanta extends Enemies
 		animation.play("Start");
 		disparos =  new FlxTypedGroup<Disparo>();
 		for (i in 0...5){
-			var disp = new Disparo(this.x + 15, this.y + 15);
-			disp.makeGraphic(5, 5, 0xFF005512);			
+			var disp = new Disparo(this.x + 15, this.y + 15);		
 			disp.kill();
 			disparos.add(disp);
 			FlxG.state.add(disp);
 		}
+		flipY = true;
 	}
 	var time : Int = 0;
 	

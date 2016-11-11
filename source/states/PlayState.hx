@@ -15,6 +15,8 @@ import sprites.Disparo;
 import sprites.Dog;
 import flixel.system.FlxSound;
 import sprites.EneSaltin;
+import sprites.EnePlanta;
+import sprites.EneOjo;
 
 class PlayState extends FlxState
 {
@@ -79,7 +81,6 @@ class PlayState extends FlxState
 		//FlxG.watch.add(player, "y");
 		//FlxG.watch.add(boss, "y");
 		
-		
 	}
 	
 	var Bosstime : Int = 0;
@@ -89,7 +90,6 @@ class PlayState extends FlxState
 		
 		player.hpBar.x = player.x;
 		player.hpBar.y = player.y - 10;	
-		
 		FlxG.collide(tiles, player);
 		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
@@ -183,7 +183,7 @@ class PlayState extends FlxState
 		add(player);
 		add(player.hpBar);
 		add(playerDisparos);
-		player.x = 1900;
+		//player.x = 1900;
 	}
 	
 	private function Colisiones(Sprite1:FlxObject, Sprite2:FlxObject): Bool{		
@@ -226,6 +226,36 @@ class PlayState extends FlxState
 			
 			var _dog: Dynamic = cast(Sprite1, Dog);
 			_dog.kill();
+			return true;
+		}
+		
+		if (sName1 == "sprites.EneSaltin" && sName2 == "sprites.Disparo"){
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			
+			var _salti: Dynamic = cast(Sprite1, EneSaltin);
+			_salti.kill();
+			return true;
+		}
+		
+		if (sName1 == "sprites.EneOjo" && sName2 == "sprites.Disparo"){
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			
+			var _ojo: Dynamic = cast(Sprite1, EneOjo);
+			_ojo.kill();
+			return true;
+		}
+		
+		if (sName1 == "sprites.EnePlanta" && sName2 == "sprites.Disparo"){
+			var disp: Dynamic = cast(Sprite2, Disparo);
+			disp.kill();
+			disp.activado = false;
+			
+			var _pla: Dynamic = cast(Sprite1, EnePlanta);
+			_pla.kill();
 			return true;
 		}
 		return false;

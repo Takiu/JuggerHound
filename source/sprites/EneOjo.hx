@@ -3,6 +3,7 @@ package sprites;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxSprite;
 import flixel.FlxG;
+import flixel.FlxObject;
 
 /**
  * ...
