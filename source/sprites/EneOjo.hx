@@ -17,11 +17,10 @@ class EneOjo extends Enemies
 		loadGraphic(AssetPaths.Eyev1__png, true, 16, 16);
 		animation.add("Anim", [0,1, 2, 3, 4, 5, 6, 7], 20, true);
 		animation.play("Anim");
-		FlxG.watch.add(EneOjo, "dis");
 	}
 	
 	var time : Int = 0;
-	private static var dis : Int;
+	private var dis : Int;
 	
 	public function Movimiento(pla : FlxSprite):Void 
 	{			
@@ -55,6 +54,7 @@ class EneOjo extends Enemies
 			if (this.x < pla.x){
 				flipX = true;
 			}
+			FlxG.overlap(this, pla,null,Colisiones);
 		}
 		else
 		{
@@ -73,6 +73,13 @@ class EneOjo extends Enemies
 			}
 		}
 		time++;
+	}
+	
+	private function Colisiones(sp1:FlxObject, sp2:Player): Bool		
+	{
+		this.kill();
+		sp2.vida--;
+		return true;
 	}
 	
 }

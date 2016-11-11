@@ -13,6 +13,7 @@ import flixel.FlxObject;
 import sprites.Boss;
 import sprites.Disparo;
 import sprites.Dog;
+import sprites.EnePlanta;
 
 class PlayState extends FlxState
 {
@@ -25,6 +26,7 @@ class PlayState extends FlxState
 	private var boss : Boss;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
+	private var plant : EnePlanta;
 	
 	override public function create():Void
 	{
@@ -66,6 +68,10 @@ class PlayState extends FlxState
 		//FlxG.watch.add(player, "x");
 		//FlxG.watch.add(boss, "y");
 		
+		plant = new EnePlanta();
+		plant.x = 150;
+		plant.y = 780;
+		add(plant);
 	}
 	
 	var Bosstime : Int = 0;
@@ -102,6 +108,10 @@ class PlayState extends FlxState
 				Reg.bossFightBegins = false;
 				boss.revive();				
 			}
+		}
+		
+		if (plant.alive){
+			plant.Movimiento(player);
 		}
 		
 		if (boss.alive)
@@ -149,7 +159,7 @@ class PlayState extends FlxState
 			playerDisparos = new FlxTypedGroup<Disparo>();		
 			add(playerDisparos);
 			//player = new Player(X, Y, playerDisparos);
-			player = new Player(1200,700, playerDisparos);
+			player = new Player(50,700, playerDisparos);
 		}
 		add(Reg.stairs);
 		add(player);
