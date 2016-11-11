@@ -170,8 +170,7 @@ class PlayState extends FlxState
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));	
 			
-			playerDisparos = new FlxTypedGroup<Disparo>();		
-			add(playerDisparos);
+			playerDisparos = new FlxTypedGroup<Disparo>();					
 			player = new Player(X, Y, playerDisparos);
 			//player = new Player(1400,900, playerDisparos);
 		}
@@ -183,6 +182,7 @@ class PlayState extends FlxState
 		add(Reg.stairs);
 		add(player);
 		add(player.hpBar);
+		add(playerDisparos);
 		player.x = 1900;
 	}
 	
