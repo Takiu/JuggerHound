@@ -51,7 +51,7 @@ class Boss extends Enemies
 		r = new FlxRandom();
 		r.resetInitialSeed();
 		for (i in 0...14){
-			var disp = new Disparo( 1752 + (i * 16), 784);
+			var disp = new Disparo( 1960 + (i * 16), 930);
 			disp.kill;			
 			disp.loadGraphic(AssetPaths.Ata1__png, true, 16, 32);
 			disp.animation.add("Start", [11], 30, false);
@@ -61,7 +61,7 @@ class Boss extends Enemies
 			FlxG.state.add(disp);
 		}
 		for (i in 0...7){
-			var disp = new Disparo(1752 + (i * 32), 638);
+			var disp = new Disparo(1960 + (i * 32), 782);
 			disp.loadGraphic(AssetPaths.Ata2__png, true, 32, 32);
 			disp.animation.add("Start", [2],30,false);
 			disp.animation.add("Terre", [1, 2, 3, 2], 30, true);
@@ -84,16 +84,16 @@ class Boss extends Enemies
 		{
 			animation.play("idle");
 			atacando = true;
-			tipoA = r.int(1, 3);
+			tipoA = 1;//r.int(1, 3);
 			velocity.x = 0;			
 			if (lado)
 			{
-				cont = Math.round((1950 - (this.x + 16)) / 16);
+				cont = Math.round((2167 - (this.x + 16)) / 16);
 				cont = 13 - cont;
 			}
 			else
 			{
-				cont = Math.round((this.x - 1752) / 16) ;
+				cont = Math.round((this.x - 1960) / 16) ;
 			}
 		}
 		switch(tipoA)
@@ -201,7 +201,7 @@ class Boss extends Enemies
 					obj.animation.play("Nace");
 					obj.activado = false;
 					obj.velocity.y = 0; 
-					obj.y = 638;
+					obj.y = 782;
 					obj.colision = false;
 				}
 			});

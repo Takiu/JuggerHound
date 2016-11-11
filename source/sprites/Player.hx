@@ -21,6 +21,9 @@ class Player extends FlxSprite
 	private static var lado:Bool = true;
 	public var vida : Int = 10;
 	
+	public static var xs :Float = 0;
+	public static var ys :Float = 0;
+	
 	public function new(?X:Float=0, ?Y:Float=0,playerDisp:FlxTypedGroup<Disparo>) 
 	{
 		super(X, Y);
@@ -46,10 +49,15 @@ class Player extends FlxSprite
 			newDisp.kill();
 			disparos.add(newDisp);
 		}
+		
+		FlxG.watch.add(Player, "xs");
+		FlxG.watch.add(Player, "ys");
 	}
 	
 	public function playerMovement():Void
 	{
+		xs = this.x;
+		ys = this.y;
 		if (statusMovements != "ladder"){
 			velocity.x = 0;
 			acceleration.y = 700;
