@@ -13,8 +13,8 @@ import flixel.ui.FlxBar;
 class Boss extends Enemies 
 {
 
-	private static inline var sbX: Int = 1950;
-	private static inline var sbY: Int = 780;
+	private static inline var sbX: Int = 2150;
+	private static inline var sbY: Int = 915;
 	private var atacando : Bool = false;
 	public var tierraE:FlxTypedGroup<Disparo>;
 	public var techoE:FlxTypedGroup<Disparo>;

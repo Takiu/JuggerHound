@@ -13,6 +13,7 @@ class Reg
 	inline static public var maxJumpTime:Float = 0.5;
 	static public var jumping:Float = 0;
 	static public var stairs:FlxTypedGroup<FlxSprite>;
+	static public var boxes:FlxTypedGroup<FlxSprite>;
 	static public var bossFight:Bool = false;
 	static public var bossFightBegins:Bool = false;
 	static public var playerXPosition:Float;

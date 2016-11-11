@@ -20,8 +20,11 @@ class PlayState extends FlxState
 	public var background:FlxTilemap;
 	public var tiles:FlxTilemap;
 	public var otherTiles:FlxTilemap;
+	public var otherTiles2:FlxTilemap;
+	public var otherTiles3:FlxTilemap;
 	public var cameraGuide:FlxSprite;
 	public var stair:FlxSprite;
+	public var box:FlxSprite;
 	private var boss : Boss;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
@@ -31,20 +34,23 @@ class PlayState extends FlxState
 		super.create();
 		
 		//TODA LA CREACION DEL NIVEL Y MAPA
-		var loader:FlxOgmoLoader = new FlxOgmoLoader(AssetPaths.level4__oel);
+		var loader:FlxOgmoLoader = new FlxOgmoLoader(AssetPaths.JuggerLevel__oel);
 		//background = loader.loadTilemap(AssetPaths.tile_ref__png, 16, 32, "Background");
 		
 		tiles = loader.loadTilemap(AssetPaths.tile_ref__png, 16, 16, "floor");
 		otherTiles = loader.loadTilemap(AssetPaths.stairs__png, 16, 16, "stairs");
+		otherTiles2 = loader.loadTilemap(AssetPaths.TemplateB__png, 16, 16, "Capa2");
+		otherTiles3 = loader.loadTilemap(AssetPaths.TemplateA__png, 16, 16, "Capa1");
 		Reg.stairs = new FlxTypedGroup<FlxSprite>();
 		loader.loadEntities(addEntities, "entities");
 		
 		//SETEAR LAS PROPIEDADES DE LAS COLISIONES
 		tiles.setTileProperties(0, FlxObject.NONE);
+		otherTiles2.setTileProperties(0, FlxObject.NONE);
 		
 		//LAS REGLAS A LA CAMARA SOBRE DONDE PUEDE MOVERSE
-		FlxG.camera.setScrollBounds(0, 848*4, 0, 848);
-		FlxG.worldBounds.set(0,0,848*4,848);
+		FlxG.camera.setScrollBounds(0, 980*4, 0, 980);
+		FlxG.worldBounds.set(0,0,980*4,980);
 		
 		cameraGuide = new FlxSprite(FlxG.camera.width / 2, FlxG.camera.height / 2);
 		//POSICION DEL CAMERA GUIDE PARA ESTAR CERCA DEL BOSS
@@ -52,12 +58,10 @@ class PlayState extends FlxState
 		FlxG.camera.follow(cameraGuide);
 		
 		//add(background);
-		add(tiles);
-		add(otherTiles);
-		add(cameraGuide);
 		
+		add(cameraGuide);
 		dog = new Dog(player.x + 300,player.y - 150);
-		add(dog);
+		//add(dog);
 		
 		//add Boss
 		boss = new Boss();
@@ -79,10 +83,11 @@ class PlayState extends FlxState
 		FlxG.overlap(boss, player,null,Colisiones);
 		FlxG.overlap(boss, playerDisparos, null, Colisiones);
 		FlxG.overlap(dog, playerDisparos, null, Colisiones);
+		trace(player.x + "----" + player.y);
 		if (Reg.bossFight){
 			FlxG.collide(player, otherTiles);
 		}
-		if ((cameraGuide.x >= 1769 && cameraGuide.x <= 1864) && cameraGuide.y == 791){
+		if ((cameraGuide.x >= 1989 && cameraGuide.x <= 2072) && cameraGuide.y == 935){
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;
 		}
@@ -94,7 +99,7 @@ class PlayState extends FlxState
 				cameraGuide.y = player.y;
 			}
 		} else {
-			if (cameraGuide.x <= 1864){
+			if (cameraGuide.x <= 2072){
 				cameraGuide.x++;
 				player.velocity.x = 0;
 				player.velocity.y = 0;
@@ -125,34 +130,40 @@ class PlayState extends FlxState
 	private function addEntities(entityName:String, entityData:Xml):Void
 	{
 		
-		if (entityName == "escaleras")
+		if (entityName == "doblestairs")
 		{
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));
 				
 			stair = new FlxSprite(X, Y);
-			stair.loadGraphic(AssetPaths.escaleras__png, true, 16, 160);
+			stair.loadGraphic(AssetPaths.escaleraDoblev1__png, true, 32, 16);
 			Reg.stairs.add(stair);
 		
 		}
-		if (entityName == "escalerachica"){
+		/*if (entityName == "box"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
 			var Y:Float = Std.parseFloat(entityData.get("y"));
 			
-			stair = new FlxSprite(X, Y);
-			stair.loadGraphic(AssetPaths.escaleras__png, true, 16, 96);
-			Reg.stairs.add(stair);
-		}
+			box = new FlxSprite(X, Y);
+			box.loadGraphic(AssetPaths.caja__png, true, 16, 16);
+			Reg.boxes.add(box);
+		}*/
 		if (entityName == "player"){
 			var X:Float = Std.parseFloat(entityData.get("x"));
-			var Y:Float = Std.parseFloat(entityData.get("y"));					
+			var Y:Float = Std.parseFloat(entityData.get("y"));	
+			
 			playerDisparos = new FlxTypedGroup<Disparo>();		
 			add(playerDisparos);
 			//player = new Player(X, Y, playerDisparos);
-			player = new Player(1200,700, playerDisparos);
+			player = new Player(1400,900, playerDisparos);
 		}
+		add(tiles);
+		add(otherTiles);
+		add(otherTiles3);
+		add(otherTiles2);
 		add(Reg.stairs);
 		add(player);
+		//add(Reg.boxes);
 		//player.x = 1200;
 	}
 	
