@@ -9,6 +9,7 @@ import flixel.math.FlxRandom;
 import flixel.tweens.FlxTween;
 import flixel.math.FlxPoint;
 import flixel.ui.FlxBar;
+import states.MenuState;
 
 class Boss extends Enemies 
 {
@@ -26,7 +27,7 @@ class Boss extends Enemies
 	private var timeAtt: Int = 0;
 	private var _tween:FlxTween;
 	private var posPlayer : Float;
-	public var vida : Int = 10000;
+	public var vida : Int = 20000;
 	public var hpBar:FlxBar;
 	
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
@@ -42,7 +43,7 @@ class Boss extends Enemies
 		techoE = new FlxTypedGroup<Disparo>();
 		piedra = new FlxTypedGroup<Disparo>();
 		
-		hpBar = new FlxBar(X - 50, Y - 175, null, 100, 10);
+		hpBar = new FlxBar(1985, 650,BOTTOM_TO_TOP, 8, 100);
 		hpBar.createFilledBar(0xFF8e0000, 0xFFFF0000);
 		hpBar.setRange(0, vida);
 		hpBar.value = vida;
@@ -74,7 +75,7 @@ class Boss extends Enemies
 		pied.kill();
 		piedra.add(pied);
 		FlxG.state.add(pied);
-		FlxG.watch.add(Boss, "vida");
+		//FlxG.watch.add(Boss, "vida");
 	}
 	
 	public function Atacar()
@@ -141,7 +142,7 @@ class Boss extends Enemies
 			animation.play("walk");
 		}
 		lado = (this.x <= posPlayer)?true:( this.x >= posPlayer)?false:lado;
-		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 33 && lado))
+		if ((posPlayer + 35 >= this.x && !lado) || (posPlayer <= this.x + 40 && lado))
 		{
 			animation.play("idle");
 			velocity.x = 0;		
@@ -220,13 +221,13 @@ class Boss extends Enemies
 			piedra.members[0].revive();
 			if (lado)
 			{
-				xs = [this.x+16, this.x + (posPA - this.x)/2, posPA];
-				ys = [this.y+16, this.y - 96, this.y];
+				xs = [this.x+19, this.x + (posPA - this.x)/2, posPA];
+				ys = [this.y+19, this.y - 96, this.y + 6];
 			}
 			else
 			{				
-				xs = [this.x-16, this.x + (this.x - posPlayer )/2, posPA];
-				ys = [this.y+16, this.y - 96, this.y];
+				xs = [this.x-19, this.x + (this.x - posPlayer )/2, posPA];
+				ys = [this.y+19, this.y - 96, this.y + 6];
 			}			
 			piedra.members[0].x = xs[0];
 			piedra.members[0].y = ys[0];
@@ -324,6 +325,7 @@ class Boss extends Enemies
 		{
 			//Perdio
 			destroy();
+			FlxG.switchState(new MenuState());
 		}
 		
 	}
