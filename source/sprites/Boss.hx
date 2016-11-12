@@ -345,7 +345,6 @@ class Boss extends Enemies
 			//Perdio
 			this.kill();
 			hpBar.kill();
-			FlxG.switchState(new MenuState());
 		}
 		
 	}

@@ -18,6 +18,8 @@ import flixel.system.FlxSound;
 import sprites.EneSaltin;
 import sprites.EnePlanta;
 import sprites.EneOjo;
+import flixel.math.FlxRandom;
+import sprites.Botiquin;
 
 class PlayState extends FlxState
 {
@@ -41,6 +43,7 @@ class PlayState extends FlxState
 	public var enemyThird:FlxTypedGroup<EnePlanta>;
 	public var enemyFour:FlxTypedGroup<EneOjo>;
 	private var music:FlxSound;
+	private var botiquin : FlxTypedGroup<Botiquin>;
 	
 	override public function create():Void
 	{
@@ -71,6 +74,7 @@ class PlayState extends FlxState
 		add(background);
 		
 		boxes = new FlxTypedGroup<FlxSprite>();
+		botiquin = new FlxTypedGroup<Botiquin>();
 		enemyOne = new FlxTypedGroup<EneSaltin>();
 		enemyTwo = new FlxTypedGroup<Dog>();
 		enemyThird = new FlxTypedGroup<EnePlanta>();
@@ -135,6 +139,11 @@ class PlayState extends FlxState
 		FlxG.overlap(enemyTwo, playerDisparos, null, Colisiones);
 		FlxG.overlap(enemyThird, playerDisparos, null, Colisiones);
 		FlxG.overlap(enemyFour, playerDisparos, null, Colisiones);
+		FlxG.overlap(player, botiquin, null, Colisiones);
+		if (player.vida <= 0){
+			FlxG.resetState();
+		}
+		
 		if (Reg.bossFight){
 			FlxG.collide(player, otherTiles);
 		}
@@ -173,6 +182,10 @@ class PlayState extends FlxState
 			else{
 				boss.MovAttBoss(player.x);
 				boss.Colisiones(player);
+				if (boss.vida <= 0)
+				{
+					//Cargar State
+				}
 			}
 			Bosstime++;	
 		}
@@ -221,7 +234,7 @@ class PlayState extends FlxState
 		
 		if (entityName == "enemone") {
 			var X:Float = Std.parseFloat(entityData.get("x"));
-			var Y:Float = Std.parseFloat(entityData.get("y"));
+			var Y:Float = Std.parseFloat(entityData.get("y"))-32;
 			
 			var enemy1:EneSaltin = new EneSaltin(X,Y);
 			enemyOne.add(enemy1);
@@ -251,6 +264,20 @@ class PlayState extends FlxState
 		var sName1:String = Type.getClassName(Type.getClass(Sprite1));
 		var sName2:String = Type.getClassName(Type.getClass(Sprite2));
 		
+		if (sName1 == "sprites.Player" && sName2 == "sprites.Botiquin")
+		{
+			if(player.vida + 3 >= 10)
+				player.vida = 10;
+			else
+				player.vida += 3;	
+			
+			player.hpBar.value = player.vida;
+			var bot: Dynamic = cast(Sprite2, Botiquin);			
+			bot.kill();
+			botiquin.remove(bot);			
+			return true;
+		}
+		
 		if (sName1 == "sprites.Boss" && sName2 == "sprites.Player")
 		{
 			player.animation.play("Danio");
@@ -266,7 +293,15 @@ class PlayState extends FlxState
 			disp.kill();
 			disp.activado = false;
 			
-			var _box: Dynamic = cast(Sprite1, FlxSprite);
+			var _box: Dynamic = cast(Sprite1, FlxSprite);			
+			var r : FlxRandom;
+			r = new FlxRandom();
+			if (r.int(1, 20) <= 5)
+			{
+				var bot = new Botiquin(_box.x , _box.y);				
+				botiquin.add(bot);
+				add(bot);
+			}
 			_box.kill();
 			return true;
 		}
