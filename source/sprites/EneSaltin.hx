@@ -25,7 +25,7 @@ class EneSaltin extends Enemies
 	{
 		super.update(elapsed);		
 		
-		if (time == 20){posy = this.y; time = -1; }
+		if (time == 30){posy = this.y; time = -1; }
 		if (this.y <= posy - 30)
 		{
 			acceleration.y = 700;

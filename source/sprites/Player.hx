@@ -58,7 +58,7 @@ class Player extends FlxSprite
 		//hpBar = new FlxBar(this.x - 125, this.y - 128,BOTTOM_TO_TOP, 8, 100);
 		hpBar.createFilledBar(0xFF8e0000, 0xFF00FF00);
 		hpBar.setRange(0, vida);
-		hpBar.value = vida;		
+		hpBar.value = vida;				
 	}
 	
 	public function playerMovement():Void

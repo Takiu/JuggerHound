@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxObject;
+import sprites.Enemies;
 import sprites.Player;
 import flixel.group.FlxGroup.FlxTypedGroup;
 
@@ -33,6 +34,12 @@ class PlayState extends FlxState
 	public var boxes:FlxTypedGroup<FlxSprite>;
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
+	public var xSaltinPos = new Array();
+	public var ySaltinPos = new Array();
+	public var enemyOne:FlxTypedGroup<EneSaltin>;
+	public var enemyTwo:FlxTypedGroup<Dog>;
+	public var enemyThird:FlxTypedGroup<EnePlanta>;
+	public var enemyFour:FlxTypedGroup<EneOjo>;
 	private var music:FlxSound;
 	
 	override public function create():Void
@@ -41,10 +48,9 @@ class PlayState extends FlxState
 		
 		//TODA LA CREACION DEL NIVEL Y MAPA
 		var loader:FlxOgmoLoader = new FlxOgmoLoader(AssetPaths.JuggerLevel__oel);
-		//background = loader.loadTilemap(AssetPaths.tile_ref__png, 16, 32, "Background");
+		background = loader.loadTilemap(AssetPaths.ParallexFondo__png, 16, 16, "parallex");
 		
 		tiles = loader.loadTilemap(AssetPaths.tile_ref__png, 16, 16, "floor");
-		otherTiles = loader.loadTilemap(AssetPaths.stairs__png, 16, 16, "stairs");
 		otherTiles2 = loader.loadTilemap(AssetPaths.TemplateB__png, 16, 16, "Capa2");
 		otherTiles3 = loader.loadTilemap(AssetPaths.TemplateA__png, 16, 16, "Capa1");
 		Reg.stairs = new FlxTypedGroup<FlxSprite>();
@@ -54,25 +60,41 @@ class PlayState extends FlxState
 		otherTiles2.setTileProperties(0, FlxObject.NONE);
 		
 		//LAS REGLAS A LA CAMARA SOBRE DONDE PUEDE MOVERSE
-		FlxG.camera.setScrollBounds(0, 980*4, 0, 980);
-		FlxG.worldBounds.set(0,0,980*4,980);
+		FlxG.camera.setScrollBounds(0, tiles.width, 0, tiles.height);
+		FlxG.worldBounds.set(0,0,tiles.width,tiles.height);
 		
 		cameraGuide = new FlxSprite(FlxG.camera.width / 2, FlxG.camera.height / 2);
 		//POSICION DEL CAMERA GUIDE PARA ESTAR CERCA DEL BOSS
 		cameraGuide.makeGraphic(1, 1, 0x00000000);
 		FlxG.camera.follow(cameraGuide);
 		
-		//add(background);
+		add(background);
 		
 		boxes = new FlxTypedGroup<FlxSprite>();
+		enemyOne = new FlxTypedGroup<EneSaltin>();
+		enemyTwo = new FlxTypedGroup<Dog>();
+		enemyThird = new FlxTypedGroup<EnePlanta>();
+		enemyFour = new FlxTypedGroup<EneOjo>();		
 		
 		add(cameraGuide);
+		add(tiles);
+		add(otherTiles3);
+		add(otherTiles2);
 		loader.loadEntities(addEntities, "entities");
-		dog = new Dog(player.x + 300,player.y - 150);
-		//add(dog);
+		
+		
+		add(boxes);
+		add(Reg.stairs);
+		add(enemyFour);
+		add(enemyOne);
+		add(enemyTwo);
+		add(enemyThird);
+		add(player);
+		add(playerDisparos);
+		add(player.hpBar);
 		
 		music = FlxG.sound.load(AssetPaths.Level__wav, 0.5, true);
-		music.play();		
+		music.play();
 		
 		//add Boss
 		boss = new Boss();
@@ -87,17 +109,32 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		enemyFour.forEach(function(obj : EneOjo)
+		{
+			obj.Movimiento(player);
+		});
 		
+		enemyThird.forEach(function(obj : EnePlanta)
+		{
+			obj.Movimiento(player);
+		});
+			
 		player.hpBar.x = player.x;
 		player.hpBar.y = player.y - 10;	
 		FlxG.collide(tiles, player);
-		FlxG.collide(dog,tiles);
 		FlxG.collide(tiles, boss);
+		FlxG.collide(tiles, enemyTwo);
+		FlxG.collide(tiles, enemyOne);
 		FlxG.collide(player,boxes);
 		FlxG.overlap(boss, player, null, Colisiones);
 		FlxG.overlap(boss, playerDisparos, null, Colisiones);
 		FlxG.overlap(boxes, playerDisparos, null, Colisiones);
-		FlxG.overlap(dog, playerDisparos, null, Colisiones);
+		FlxG.overlap(enemyOne, playerDisparos, null, Colisiones);
+		FlxG.overlap(player, enemyOne, null, Colisiones);
+		FlxG.overlap(player, enemyTwo, null, Colisiones);
+		FlxG.overlap(enemyTwo, playerDisparos, null, Colisiones);
+		FlxG.overlap(enemyThird, playerDisparos, null, Colisiones);
+		FlxG.overlap(enemyFour, playerDisparos, null, Colisiones);
 		if (Reg.bossFight){
 			FlxG.collide(player, otherTiles);
 		}
@@ -174,16 +211,40 @@ class PlayState extends FlxState
 			player = new Player(X, Y, playerDisparos);
 			//player = new Player(1400,900, playerDisparos);
 		}
-		add(tiles);
-		add(otherTiles);
-		add(otherTiles3);
-		add(otherTiles2);
-		add(boxes);
-		add(Reg.stairs);
-		add(player);
-		add(player.hpBar);
-		add(playerDisparos);
-		//player.x = 1900;
+		if (entityName == "enemyfour") {
+			var X:Float = Std.parseFloat(entityData.get("x"));
+			var Y:Float = Std.parseFloat(entityData.get("y"));
+			
+			var enemy4:EneOjo = new EneOjo(X, Y);
+			enemyFour.add(enemy4);
+		}
+		
+		if (entityName == "enemone") {
+			var X:Float = Std.parseFloat(entityData.get("x"));
+			var Y:Float = Std.parseFloat(entityData.get("y"));
+			
+			var enemy1:EneSaltin = new EneSaltin(X,Y);
+			enemyOne.add(enemy1);
+		}
+		
+		if (entityName == "enemytwo") {
+			var X:Float = Std.parseFloat(entityData.get("x"));
+			var Y:Float = Std.parseFloat(entityData.get("y"));
+			
+			var enemy2:Dog = new Dog(X,Y);
+			enemyTwo.add(enemy2);
+		}
+		
+		if (entityName == "enemythree") {
+			var X:Float = Std.parseFloat(entityData.get("x"));
+			var Y:Float = Std.parseFloat(entityData.get("y"));
+			
+			var enemy3:EnePlanta = new EnePlanta(X,Y);
+			enemyThird.add(enemy3);
+		}
+		
+		
+
 	}
 	
 	private function Colisiones(Sprite1:FlxObject, Sprite2:FlxObject): Bool{		
@@ -256,6 +317,24 @@ class PlayState extends FlxState
 			
 			var _pla: Dynamic = cast(Sprite1, EnePlanta);
 			_pla.kill();
+			return true;
+		}
+		
+		if (sName1 == "sprites.Player" && sName2 == "sprites.EneSaltin"){
+			var disp: Dynamic = cast(Sprite2, EneSaltin);
+			disp.kill();
+			player.vida--;
+			player.hpBar.value = player.vida;
+
+			return true;
+		}
+		
+		if (sName1 == "sprites.Player" && sName2 == "sprites.Dog"){
+			var disp: Dynamic = cast(Sprite2, Dog);
+			disp.kill();
+			player.vida--;
+			player.hpBar.value = player.vida;
+
 			return true;
 		}
 		return false;

@@ -19,13 +19,16 @@ class Dog extends Enemies
 	}
 	override public function update(elapsed:Float):Void
 	{
-		super.update(elapsed);
-		if (x < Reg.playerXPosition){
-			velocity.x += 10;
-			flipX = true;
-		} else {
-			velocity.x -= 10;
-			flipX = false;
+		if (this.alive)
+		{
+			super.update(elapsed);
+			if (x < Reg.playerXPosition){
+				velocity.x += 10;
+				flipX = true;
+			} else {
+				velocity.x -= 10;
+				flipX = false;
+			}
 		}
 	}
 }

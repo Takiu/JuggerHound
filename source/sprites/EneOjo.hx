@@ -80,6 +80,7 @@ class EneOjo extends Enemies
 	{
 		this.kill();
 		sp2.vida--;
+		sp2.hpBar.value = sp2.vida;
 		return true;
 	}
 	

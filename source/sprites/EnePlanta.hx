@@ -62,24 +62,28 @@ class EnePlanta extends Enemies
 	{
 		sp1.kill();
 		sp2.vida--;
+		sp2.hpBar.value = sp2.vida;
 		return true;
 	}
 	
 	private function Atacar()
 	{
-		disparos.forEach(function(obj : Disparo)
+		if (this.alive)
 		{
-			obj.x = this.x + 15;
-			obj.y = this.y + 15;
-			obj.revive();
-		});
-		disparos.members[0].velocity.x = -100;
-		disparos.members[1].velocity.x = -100;
-		disparos.members[1].velocity.y = 100;
-		disparos.members[2].velocity.y = 100;
-		disparos.members[3].velocity.x = 100;
-		disparos.members[3].velocity.y = 100;
-		disparos.members[4].velocity.x = 100;
+			disparos.forEach(function(obj : Disparo)
+			{
+				obj.x = this.x + 15;
+				obj.y = this.y + 15;
+				obj.revive();
+			});
+			disparos.members[0].velocity.x = -100;
+			disparos.members[1].velocity.x = -100;
+			disparos.members[1].velocity.y = 100;
+			disparos.members[2].velocity.y = 100;
+			disparos.members[3].velocity.x = 100;
+			disparos.members[3].velocity.y = 100;
+			disparos.members[4].velocity.x = 100;
+		}
 	}
 	
 	public function Destruir()
