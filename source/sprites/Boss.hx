@@ -329,6 +329,8 @@ class Boss extends Enemies
 		player.hpBar.value = player.vida;
 		if (player.vida <= 0){
 			//Murio el player
+			FlxG.resetState();
+			Reg.bossFight = false;
 		}
 	}
 	

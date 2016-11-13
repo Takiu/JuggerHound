@@ -182,10 +182,6 @@ class PlayState extends FlxState
 			else{
 				boss.MovAttBoss(player.x);
 				boss.Colisiones(player);
-				if (boss.vida <= 0)
-				{
-					//Cargar State
-				}
 			}
 			Bosstime++;	
 		}
@@ -221,7 +217,7 @@ class PlayState extends FlxState
 			var Y:Float = Std.parseFloat(entityData.get("y"));	
 			
 			playerDisparos = new FlxTypedGroup<Disparo>();					
-			player = new Player(X, Y, playerDisparos);
+			player = new Player(1900, Y, playerDisparos);
 			//player = new Player(1400,900, playerDisparos);
 		}
 		if (entityName == "enemyfour") {
