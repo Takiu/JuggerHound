@@ -104,8 +104,6 @@ class PlayState extends FlxState
 		boss = new Boss();
 		boss.kill();
 		add(boss);
-		//FlxG.watch.add(player, "y");
-		//FlxG.watch.add(boss, "y");
 		
 	}
 	
@@ -217,8 +215,7 @@ class PlayState extends FlxState
 			var Y:Float = Std.parseFloat(entityData.get("y"));	
 			
 			playerDisparos = new FlxTypedGroup<Disparo>();					
-			player = new Player(1900, Y, playerDisparos);
-			//player = new Player(1400,900, playerDisparos);
+			player = new Player(X, Y, playerDisparos);
 		}
 		if (entityName == "enemyfour") {
 			var X:Float = Std.parseFloat(entityData.get("x"));

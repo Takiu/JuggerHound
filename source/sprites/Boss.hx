@@ -347,6 +347,9 @@ class Boss extends Enemies
 			//Perdio
 			this.kill();
 			hpBar.kill();
+			// Cambiar el state para la animacion
+			FlxG.resetState();
+			Reg.bossFight = false;
 		}
 		
 	}
