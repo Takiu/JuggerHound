@@ -32,7 +32,10 @@ class MenuState extends FlxState
 		add(playText);
 		
 		optionPointer = new FlxSprite();
-		optionPointer.makeGraphic(16,6,0xFFFFFF00);
+		optionPointer.loadGraphic(AssetPaths.Dog__png, true, 36, 16);
+		optionPointer.animation.add("Anim", [0, 1], 20, true);
+		optionPointer.animation.play("Anim");
+		optionPointer.flipX = true;
 		optionPointer.x = playText.x - optionPointer.width - 5;
 		optionPointer.y = playText.y - 1;
 		add(optionPointer);

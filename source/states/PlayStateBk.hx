@@ -34,7 +34,6 @@ class PlayState extends FlxState
 	public var box:FlxSprite;
 	private var boss : Boss;
 	public var boxes:FlxTypedGroup<FlxSprite>;
-	public var compuertas:FlxTypedGroup<FlxSprite>;	
 	public var playerDisparos:FlxTypedGroup<Disparo>;
 	public var dog:Dog;
 	public var xSaltinPos = new Array();
@@ -75,7 +74,6 @@ class PlayState extends FlxState
 		add(background);
 		
 		boxes = new FlxTypedGroup<FlxSprite>();
-		compuertas = new FlxTypedGroup<FlxSprite>();
 		botiquin = new FlxTypedGroup<Botiquin>();
 		enemyOne = new FlxTypedGroup<EneSaltin>();
 		enemyTwo = new FlxTypedGroup<Dog>();
@@ -85,7 +83,7 @@ class PlayState extends FlxState
 		add(cameraGuide);
 		add(tiles);
 		add(otherTiles3);
-		add(otherTiles2);		
+		add(otherTiles2);
 		loader.loadEntities(addEntities, "entities");
 		
 		
@@ -168,14 +166,12 @@ class PlayState extends FlxState
 				player.velocity.y = 0;
 			} else {
 				Reg.bossFightBegins = false;
-				add(compuertas);
 				boss.revive();
 			}
 		}
 		
 		if (boss.alive)
 		{
-			FlxG.collide(compuertas, player);
 			if (Bosstime >= Reg.timeAttaqueBoss)
 			{
 				boss.Atacar();
@@ -190,13 +186,6 @@ class PlayState extends FlxState
 		
 		Reg.playerXPosition = player.x;
 		Reg.jumping += elapsed;
-		
-		/*if (FlxG.keys.justPressed.R)
-		{
-			Reg.bossFight = false;
-			FlxG.resetState();
-		}
-		*/
 	}
 	
 	private function addEntities(entityName:String, entityData:Xml):Void
@@ -226,7 +215,7 @@ class PlayState extends FlxState
 			var Y:Float = Std.parseFloat(entityData.get("y"));	
 			
 			playerDisparos = new FlxTypedGroup<Disparo>();					
-			player = new Player(X, Y, playerDisparos);
+			player = new Player(1900, Y, playerDisparos);
 		}
 		if (entityName == "enemyfour") {
 			var X:Float = Std.parseFloat(entityData.get("x"));
@@ -258,16 +247,6 @@ class PlayState extends FlxState
 			
 			var enemy3:EnePlanta = new EnePlanta(X,Y);
 			enemyThird.add(enemy3);
-		}
-
-		if (entityName == "compuerta") {
-			var X:Float = Std.parseFloat(entityData.get("x"));
-			var Y:Float = Std.parseFloat(entityData.get("y"));
-			
-			var compuerta:FlxSprite = new FlxSprite(X,Y);
-			compuerta.loadGraphic(AssetPaths.stairs__png, false, 16, 16);
-			compuerta.immovable = true;
-			compuertas.add(compuerta);
 		}
 		
 		

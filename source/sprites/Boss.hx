@@ -10,7 +10,7 @@ import flixel.tweens.FlxTween;
 import flixel.math.FlxPoint;
 import flixel.ui.FlxBar;
 import states.MenuState;
-
+import states.GameOverState;
 class Boss extends Enemies 
 {
 
@@ -348,7 +348,7 @@ class Boss extends Enemies
 			this.kill();
 			hpBar.kill();
 			// Cambiar el state para la animacion
-			FlxG.resetState();
+			FlxG.switchState(new GameOverState(true));
 			Reg.bossFight = false;
 		}
 		
