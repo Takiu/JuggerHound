@@ -97,7 +97,7 @@ class PlayState extends FlxState
 		add(playerDisparos);
 		add(player.hpBar);
 		
-		music = FlxG.sound.load(AssetPaths.Level__wav, 0.5, true);
+		music = FlxG.sound.load(AssetPaths.juggersong__wav, 0.5, true);
 		music.play();
 		
 		//add Boss

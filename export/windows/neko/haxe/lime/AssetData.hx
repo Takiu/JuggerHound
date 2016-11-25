@@ -76,6 +76,8 @@ class AssetData {
 			type.set ("assets/images/Titan.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			path.set ("assets/music/bossLevel.wav", "assets/music/bossLevel.wav");
 			type.set ("assets/music/bossLevel.wav", Reflect.field (AssetType, "sound".toUpperCase ()));
+			path.set ("assets/music/juggersong.wav", "assets/music/juggersong.wav");
+			type.set ("assets/music/juggersong.wav", Reflect.field (AssetType, "sound".toUpperCase ()));
 			path.set ("assets/music/Level.wav", "assets/music/Level.wav");
 			type.set ("assets/music/Level.wav", Reflect.field (AssetType, "sound".toUpperCase ()));
 			path.set ("assets/music/music-goes-here.txt", "assets/music/music-goes-here.txt");
@@ -92,8 +94,6 @@ class AssetData {
 			type.set ("flixel/fonts/monsterrat.ttf", Reflect.field (AssetType, "font".toUpperCase ()));
 			path.set ("flixel/images/ui/button.png", "flixel/images/ui/button.png");
 			type.set ("flixel/images/ui/button.png", Reflect.field (AssetType, "image".toUpperCase ()));
-			path.set ("flixel/images/logo/default.png", "flixel/images/logo/default.png");
-			type.set ("flixel/images/logo/default.png", Reflect.field (AssetType, "image".toUpperCase ()));
 			
 			
 			initialized = true;

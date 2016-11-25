@@ -451,10 +451,6 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
-		urls.push ("flixel/images/logo/default.png");
-		types.push (lime.Assets.AssetType.IMAGE);
-		
-		
 		
 		if (config.assetsPrefix != null) {
 			
@@ -515,7 +511,7 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "120",
+			build: "3",
 			company: "HaxeFlixel",
 			file: "JuggerHound",
 			fps: 60,
