@@ -99,7 +99,7 @@ class PlayState extends FlxState
 		add(playerDisparos);
 		add(player.hpBar);
 		
-		music = FlxG.sound.load(AssetPaths.juggersong__wav, 0.5, true);
+		music = FlxG.sound.load(AssetPaths.juggersong__ogg, 0.5, true);
 		music.play();
 		
 		//add Boss
@@ -149,7 +149,7 @@ class PlayState extends FlxState
 		}
 		if ((cameraGuide.x >= 1989 && cameraGuide.x <= 2072) && cameraGuide.y == 935){
 			music.stop();
-			music = FlxG.sound.load(AssetPaths.bossLevel__wav, 0.9, true);
+			music = FlxG.sound.load(AssetPaths.bossLevel__ogg, 0.9, true);
 			music.play();
 			Reg.bossFight = true;
 			Reg.bossFightBegins = true;

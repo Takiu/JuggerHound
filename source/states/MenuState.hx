@@ -26,7 +26,7 @@ class MenuState extends FlxState
 		NameTxt.color = 0xFFc300ff;
 		add(NameTxt);
 		
-		playText = new FlxText(0, 0, "PLAY");
+		playText = new FlxText(0, 0, 0, "PLAY",8,true);
 		playText.x = (FlxG.width / 2) - (playText.width / 2);
 		playText.y = FlxG.height - playText.height - 10;
 		add(playText);

@@ -54,7 +54,7 @@ class GameOverState extends FlxState
 		titan.y = 120;
 		add(titan);
 		
-		replayText = new FlxText(0, 0, "REPLAY");
+		replayText = new FlxText(0, 0,0, "REPLAY",8,true);
 		replayText.x = (FlxG.width / 2) - (replayText.width / 2);
 		replayText.y = FlxG.height - replayText.height - 10;
 		add(replayText);

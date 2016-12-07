@@ -291,7 +291,7 @@ class Boss extends Enemies
 		//Colision con la tierra
 		tierraE.forEach(function(obj : Disparo)
 		{			
-			if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
+			if (FlxG.pixelPerfectOverlap(player, obj, 255,null) && !obj.colision)
 			{
 				obj.colision = true;
 				player.vida--;
@@ -304,7 +304,7 @@ class Boss extends Enemies
 		{
 			if (obj.activado)
 			{			
-				if (FlxG.pixelPerfectOverlap(player, obj, null) && !obj.colision)
+				if (FlxG.pixelPerfectOverlap(player, obj, 255,null) && !obj.colision)
 				{
 					obj.colision = true;
 					player.vida--;
@@ -314,7 +314,7 @@ class Boss extends Enemies
 		});
 		
 		//Colision con la piedra				
-		if (FlxG.pixelPerfectOverlap(player, piedra.members[0], null) && !piedra.members[0].colision)
+		if (FlxG.pixelPerfectOverlap(player, piedra.members[0], 255,null) && !piedra.members[0].colision)
 		{
 			piedra.members[0].colision = true;
 			player.vida--;
